@@ -1,0 +1,40 @@
+<Matty>
+   BoxLayout:
+      id:box
+      size_hint_y: .8
+      pos_hint: {"top":1}
+   BoxLayout:
+      size_hint_y: .1
+      pos: 10, 90
+      Label:
+         id: bld_high 
+         text: 'High:'
+         font_size: 40
+         color: 0, 0, 1, 0.5
+      TextInput:
+         id: bld_high_in
+         text: '140'
+         font_size: 40
+      Label:
+         id: bld_low 
+         text: 'Low:'
+         font_size: 40
+         color: 0, 0, 1, 0.5 
+      TextInput:
+         id: bld_low_in
+         text: '110'
+         font_size: 40     
+
+      
+   BoxLayout:
+      size_hint_y: .1
+      Button:
+         id: input_val
+         text: "confirm"
+         font_size: 40
+         on_release: root.create_data()
+      Button:
+         text: "Save To PNG"
+         font_size: 40
+         on_release: root.saveit()
+         
