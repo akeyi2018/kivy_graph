@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 # import os
 # os.environ["KIVY_NO_CONSOLELOG"] = "1"
 import datetime
@@ -9,6 +9,11 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
 import matplotlib.pyplot as plt
 import matplotlib.dates as mdates
+import numpy as np
+from matplotlib.dates import date2num
+
+plt.rcParams['font.family'] = 'sans-serif'
+plt.rcParams['font.sans-serif'] = ['Hiragino Sans', 'Hiragino Kaku Gothic Pro', 'Meiryo', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
 
 from data_config import Config
 
@@ -42,57 +47,68 @@ class Matty(FloatLayout):
         blood_pressure_data_set1 = data['high']
         blood_pressure_data_set2 = data['low']
         weight_data = data['weight']
-
-        
-
-        
+        pulse_data = data['pulse']
 
         # Create a list of dates from the start_date to the end_date
-        dates = [datetime.datetime.strptime(date_string, "%Y-%m-%d").date() for date_string in data['date']]
+        # dates = [datetime.datetime.strptime(date_string, "%Y-%m-%d").date() for date_string in data['date']]
+        dates = [date2num(datetime.datetime.strptime(date_string, "%Y-%m-%d").date()) for date_string in data['date']]
+
+        # 体重データに2次多項式をフィットさせる
+        # coefficients = np.polyfit(dates, blood_pressure_data_set1 , 2)
+        # polynomial = np.poly1d(coefficients)
 
         # Plot the first set of blood pressure data
-        plt.plot_date(dates, blood_pressure_data_set1, marker='o', linestyle='--', label='High Blood Pressure')
+        plt.plot_date(dates, blood_pressure_data_set1, marker='o', linestyle='--', label='最高血圧', color='crimson')
+
+        # 近似曲線を描く
+        # plt.plot_date(dates, polynomial(dates), marker='o', linestyle='--', label='High Blood Pressure Approximation', color='g', linewidth=10)
 
         # Annotate the plotted values
         for date, value in zip(dates, blood_pressure_data_set1):
-            plt.annotate(str(value), (date, value), textcoords="offset points", xytext=(-10,10), ha='center')
+            plt.annotate(str(value), (date, value), textcoords="offset points", xytext=(-10,10), ha='center', color='crimson')
 
         # Plot the second set of blood pressure data
-        plt.plot_date(dates, blood_pressure_data_set2, marker='o', linestyle='--', label='Low Blood Pressure')
+        plt.plot_date(dates, blood_pressure_data_set2, marker='o', linestyle='--', label='最低血圧', color='tomato')
 
         #   # Annotate the plotted values
         for date, value in zip(dates, blood_pressure_data_set2):
-            plt.annotate(str(value), (date, value), textcoords="offset points", xytext=(-10,10), ha='center')
+            plt.annotate(str(value), (date, value), textcoords="offset points", xytext=(-10,10), ha='center', color='tomato')
+
+        plt.plot_date(dates, pulse_data, marker='o', linestyle='--', label='心拍数', color='deeppink')
+
+        for date, value in zip(dates, pulse_data):
+            plt.annotate(str(value), (date, value), textcoords="offset points", xytext=(-10,10), ha='center', color='deeppink')
 
         #   # Add annotations for normal values
-        plt.axhline(y=130, color='r', linestyle='--', label='Normal Upper Limit: 130')
-        plt.axhline(y=80, color='b', linestyle='--', label='Normal Lower Limit: 80')
+        plt.axhline(y=135, color='crimson', linestyle='-', linewidth=20, alpha=0.3)
+        plt.axhline(y=80, color='tomato', linestyle='-', linewidth=20, alpha=0.3)
+        # plt.fill_between(dates, 135, 180, color='tomato', alpha=0.2)
+        # plt.fill_between(dates, 80, 135, color='lightskyblue', alpha=0.2)
         
         plt.legend(loc='upper left')
 
         # Set labels and title
-        plt.title('Blood Pressure Measurements')
-        plt.xlabel('Measurement Number')
-        plt.ylabel('Blood Pressure (mmHg)')
+        plt.title('(血圧/体重)管理')
+        plt.xlabel('日付')
+        plt.ylabel('血圧(mmHg)')
         
-        plt.ylim(70, 180)
+        plt.ylim(60, 180)
 
         ax2 = plt.gca().twinx()
 
-        ax2.plot_date(dates, weight_data, marker='o', linestyle='--', label='weight', color='g')
+        ax2.plot_date(dates, weight_data, marker='o', linestyle='--', label='体重', color='g')
+        
+
         for date, value in zip(dates, weight_data):
             ax2.annotate(str(value), (date, value), textcoords="offset points", xytext=(15,-10), ha='center')
-        
-        ax2.axhline(y=70, color='g', linestyle='--', label='Normal weight: 70')
 
-        # ax2.legend()
+        ax2.axhline(y=72, color='g', linestyle='-', linewidth=20, alpha=0.3)
+
         ax2.legend(loc='upper right')
 
-        # ax2.set_ylabel('Weight (kg)')
-        ax2.set_ylabel('Weight (kg)', rotation=90, labelpad=15)
+        ax2.set_ylabel('体重(kg)', rotation=90, labelpad=15)
         ax2.yaxis.set_label_position('right')
-        ax2.set_ylim(65,85)
-
+        ax2.set_ylim(71,80)
 
         # Format the x-axis to display dates
         plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%Y-%m-%d'))
@@ -111,12 +127,13 @@ class Matty(FloatLayout):
         data = {
             "dt": datetime.date.today().strftime("%Y-%m-%d"),
             "high": int(self.ids.bld_high_in.text),
-            "low": int(self.ids.bld_low_in.text)
+            "low": int(self.ids.bld_low_in.text),
+            "pulse": int(self.ids.pulse_in.text),
+            "weight": float(self.ids.weight_in.text)
         }
         ins = Config(data)
         ins.add_new_data()
-        print('finish add new data')
-
+        print(f'finish add new data of {data}')
 
 class MainApp(MDApp):
     def build(self):

@@ -1,4 +1,6 @@
-import os,json, datetime
+import os,json, datetime,re 
+
+import pandas as pd
 
 
 class Config():
@@ -54,8 +56,36 @@ def create_data():
         ins = Config(dict_data)
         ins.add_new_data()
 
+class CsvReader():
+    def __init__(self) -> None:
+        self.file_path = 'merged_data.csv'
+        self.pattern = r'(\d{4}年)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)\s+(\d+\.\d+)'
+
+    def get_text_data(self):
+
+        gdp_x = []
+        gdp_japan = []
+        with open(self.file_path, 'r', encoding='utf-8') as file:
+            for line in file:
+                print(line)
+                matches = re.findall(self.pattern, line)
+                for match in matches:
+                    gdp_x.append(match[0])
+                    gdp_japan.append(match[1])
+        return gdp_x, gdp_japan
+    
+    def get_gdp_df(self):
+        df = pd.read_csv(self.file_path, encoding='utf-8')
+        return df
+        
 if __name__ == '__main__':
     # 単体テスト
     # create_data()
-    ins = Config({})
-    print(ins.get_json_info())
+    # ins = Config({})
+    # print(ins.get_json_info())
+
+    ins = CsvReader()
+    # x, y = ins.get_text_data()
+    ins.get_gdp_df()
+
+

@@ -23,6 +23,24 @@
       TextInput:
          id: bld_low_in
          text: '110'
+         font_size: 40
+      Label:
+         id: pulse 
+         text: 'pulse:'
+         font_size: 40
+         color: 0, 0, 1, 0.5
+      TextInput:
+         id: pulse_in
+         text: '80'
+         font_size: 40
+      Label:
+         id: weight 
+         text: 'weight:'
+         font_size: 40
+         color: 0, 0, 1, 0.5 
+      TextInput:
+         id: weight_in
+         text: '77'
          font_size: 40     
 
       
@@ -30,7 +48,7 @@
       size_hint_y: .1
       Button:
          id: input_val
-         text: "confirm"
+         text: "Confirm Input Data"
          font_size: 40
          on_release: root.create_data()
       Button:

@@ -1,0 +1,19 @@
+<MyRootWidget>
+   BoxLayout:
+      id:box
+      size_hint_y: .9
+      pos_hint: {"top":1}
+  
+   
+   BoxLayout:
+      size_hint_y: .1
+      Button:
+         id: input_val
+         text: "Confirm Input Data"
+         font_size: 40
+         on_release: root.create_data()
+      Button:
+         text: "Save To PNG"
+         font_size: 40
+         on_release: root.saveit()
+         
