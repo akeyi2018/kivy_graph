@@ -1,58 +1,68 @@
 <Matty>
    BoxLayout:
       id:box
-      size_hint_y: .8
+      size_hint_y: .9
       pos_hint: {"top":1}
    BoxLayout:
-      size_hint_y: .1
-      pos: 10, 90
+      size_hint_y: .06
+      pos: 10, 50
       Label:
          id: bld_high 
-         text: 'High:'
-         font_size: 40
+         text: '収縮期血圧:'
+         font_size: 30
          color: 0, 0, 1, 0.5
+         size_hint_x: 0.9
       TextInput:
          id: bld_high_in
          text: '140'
-         font_size: 40
+         font_size: 30
+         size_hint_x: 0.4
       Label:
          id: bld_low 
-         text: 'Low:'
-         font_size: 40
-         color: 0, 0, 1, 0.5 
+         text: '拡張期血圧:'
+         font_size: 30
+         color: 0, 0, 1, 0.7
+         size_hint_x: 0.9 
       TextInput:
          id: bld_low_in
          text: '110'
-         font_size: 40
+         font_size: 30
+         size_hint_x: 0.4
       Label:
          id: pulse 
-         text: 'pulse:'
-         font_size: 40
+         text: '心拍数:'
+         font_size: 30
          color: 0, 0, 1, 0.5
+         size_hint_x: 0.6 
       TextInput:
          id: pulse_in
          text: '80'
-         font_size: 40
+         font_size: 30
+         size_hint_x: 0.4
       Label:
          id: weight 
-         text: 'weight:'
-         font_size: 40
-         color: 0, 0, 1, 0.5 
+         text: '体重:'
+         font_size: 30
+         # size: (50, 50)
+         color: 0, 0, 1, 0.5
+         size_hint_x: 0.6  
       TextInput:
          id: weight_in
          text: '77'
-         font_size: 40     
+         font_size: 30
+         # size: (50, 50)
+         size_hint_x: 0.6     
 
       
    BoxLayout:
-      size_hint_y: .1
+      size_hint_y: .06
       Button:
          id: input_val
-         text: "Confirm Input Data"
-         font_size: 40
+         text: "データ確定&更新"
+         font_size: 30
          on_release: root.create_data()
       Button:
-         text: "Save To PNG"
-         font_size: 40
+         text: "グラフ保存"
+         font_size: 30
          on_release: root.saveit()
          

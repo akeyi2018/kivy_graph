@@ -15,21 +15,32 @@ from matplotlib.dates import date2num
 plt.rcParams['font.family'] = 'sans-serif'
 plt.rcParams['font.sans-serif'] = ['Hiragino Sans', 'Hiragino Kaku Gothic Pro', 'Meiryo', 'Takao', 'IPAexGothic', 'IPAPGothic', 'VL PGothic', 'Noto Sans CJK JP']
 
-from data_config import Config
+from kivy.core.text import LabelBase, DEFAULT_FONT
+from kivy.resources import resource_add_path
+resource_add_path('./font')
+LabelBase.register(DEFAULT_FONT, 'NotoSansSC-Regular.ttf')
+
+from kivy.config import Config
+
+from data_config import Config_data
 
 #Build our app
 
 class Matty(FloatLayout):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+        self.init_graph()
+        
 
+    def init_graph(self):
         self.create_blood()
+        self.fig = FigureCanvasKivyAgg(self.plt.gcf())
+        self.box=self.ids.box
+        self.box.add_widget(self.fig)
 
-        box=self.ids.box
-        box.add_widget(FigureCanvasKivyAgg(self.plt.gcf()))
 
     def get_json_data(self):
-        ins = Config({})
+        ins = Config_data({})
         data = ins.get_json_info()
         # リストの最初の要素を使用して、すべてのキーを抽出します。
         keys = data[0].keys()
@@ -38,6 +49,10 @@ class Matty(FloatLayout):
         data_by_key = {key: [item[key] for item in data] for key in keys}
         return data_by_key
 
+    def review(self):
+        plt.clf()
+        self.box.remove_widget(self.fig)
+        self.init_graph()
 
     def create_blood(self):
       
@@ -131,15 +146,19 @@ class Matty(FloatLayout):
             "pulse": int(self.ids.pulse_in.text),
             "weight": float(self.ids.weight_in.text)
         }
-        ins = Config(data)
+        ins = Config_data(data)
         ins.add_new_data()
         print(f'finish add new data of {data}')
+        self.review()
 
 class MainApp(MDApp):
     def build(self):
         self.theme_cls.primary_palette="Blue"
         self.theme_cls.primary_hue = "A700"
         self.theme_cls.theme_style = "Light"
+        Config.set('graphics', 'width', '800')
+        Config.set('graphics', 'height', '600')
+        Config.write()
         Builder.load_file('mappy.kv')
         return Matty()
 

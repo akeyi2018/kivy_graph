@@ -3,7 +3,7 @@ import os,json, datetime,re
 import pandas as pd
 
 
-class Config():
+class Config_data():
     
     def __init__(self, dict_data) -> None:
         
